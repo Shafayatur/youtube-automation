@@ -14,9 +14,9 @@ jobs:
   upload:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
@@ -33,7 +33,7 @@ jobs:
       - name: Download uploaded.json cache
         # Keeps track of what's been uploaded across runs
         # Without this, every run would re-upload from video 1
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: uploaded.json
           key: uploaded-log-${{ github.run_id }}
