@@ -4,4 +4,4 @@ token.json
 uploaded.json
 agent.log
 venv/
-__pycache__/
+__pycache__/.DS_Store
