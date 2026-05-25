@@ -1,0 +1,7 @@
+.env
+credentials.json
+token.json
+uploaded.json
+agent.log
+venv/
+__pycache__/
