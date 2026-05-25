@@ -1,9 +1,14 @@
+# Runs 3 times daily at BD times: 10 AM, 4 PM, 8 PM
+# BD is UTC+6, so:  10AM BD = 4AM UTC | 4PM BD = 10AM UTC | 8PM BD = 2PM UTC
+
 name: Daily Reel Upload
 
 on:
   schedule:
-    - cron: '0 9 * * *'   # 9:00 AM UTC daily
-  workflow_dispatch:        # allows manual trigger from GitHub UI
+    - cron: '0 4 * * *'    # 10:00 AM Bangladesh time
+    - cron: '0 10 * * *'   # 4:00 PM Bangladesh time
+    - cron: '0 14 * * *'   # 8:00 PM Bangladesh time
+  workflow_dispatch:         # manual trigger from GitHub UI
 
 jobs:
   upload:
@@ -22,9 +27,18 @@ jobs:
         run: |
           echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
           echo '${{ secrets.GOOGLE_TOKEN }}' > token.json
+          echo "DRIVE_FOLDER_ID=${{ secrets.DRIVE_FOLDER_ID }}" > .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+
+      - name: Download uploaded.json cache
+        # Keeps track of what's been uploaded across runs
+        # Without this, every run would re-upload from video 1
+        uses: actions/cache@v4
+        with:
+          path: uploaded.json
+          key: uploaded-log-${{ github.run_id }}
+          restore-keys: |
+            uploaded-log-
 
       - name: Run agent
         run: python agent.py
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
